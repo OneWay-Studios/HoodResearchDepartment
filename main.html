@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HoodResearchDepartment | Luxury Studio</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1d1d1f;
+      --card: #f5f5f7;
+      --accent: #0071e3;
+      --glass: rgba(255, 255, 255, 0.7);
+    }
+
+    body.dark {
+      --bg: #000000;
+      --text: #f5f5f7;
+      --card: #1c1c1e;
+      --accent: #0a84ff;
+      --glass: rgba(0, 0, 0, 0.7);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* INITIAL FADE IN ANIMATION */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-x: hidden;
+      opacity: 0;
+      animation: pageIn 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- Navigation --- */
+    header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 40px 80px;
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      background: var(--glass);
+      z-index: 1000;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    header.scrolled {
+      padding: 20px 80px;
+      border-bottom: 0.5px solid rgba(128, 128, 128, 0.1);
+    }
+
+    header h1 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-weight: 700;
+    }
+
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 42px;
+      height: 24px;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #e2e2e7;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    body.dark .slider { background-color: #323235; }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px; width: 18px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: .4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    input:checked + .slider { background-color: var(--accent); }
+    input:checked + .slider:before { transform: translateX(18px); }
+
+    /* --- Cinematic Scroll Hero --- */
+    .scroll-container {
+      height: 180vh;
+      position: relative;
+    }
+
+    .sticky-wrapper {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-image-box {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .main-product {
+      width: 40%; 
+      max-width: 550px;
+      filter: drop-shadow(0 30px 60px rgba(0,0,0,0.12));
+      transition: transform 0.1s linear;
+      content: url('Vape.png');
+      border-radius: 20px;
+    }
+
+    .hero-text-overlay {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .hero-text-overlay h2 {
+      font-size: clamp(60px, 12vw, 140px);
+      font-weight: 800;
+      letter-spacing: -6px;
+      line-height: 0.85;
+      background: linear-gradient(180deg, var(--text) 30%, rgba(128,128,128,0.2) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* --- Sections --- */
+    .content-section {
+      position: relative;
+      background: var(--bg);
+      z-index: 10;
+      padding: 100px 80px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+    }
+
+    .card {
+    background: var(--card);
+    border-radius: 32px;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.5s cubic-bezier(0.15, 0.8, 0.15, 1);
+    opacity: 0;
+    transform: translateY(40px);
+    cursor: default;
+
+    /* ADD THIS */
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .card:hover {
+    /* DO NOT go white */
+    transform: translateY(-8px) scale(1.01);
+
+    /* stronger shadow instead of color change */
+    box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+    }
+
+    .card:hover .buy-btn {
+    transform: scale(1.05);
+    }
+
+    .card.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    /* Smooth transition for all properties */
+    transition: transform 0.6s cubic-bezier(0.15, 0.8, 0.15, 1), 
+                filter 0.6s cubic-bezier(0.15, 0.8, 0.15, 1), 
+                box-shadow 0.6s cubic-bezier(0.15, 0.8, 0.15, 1);
+    }
+
+        /* Hover Effect: Scale up and "Light up" */
+    .card:hover img {
+    transform: scale(1.04); /* Subtle growth */
+    filter: brightness(1.1) contrast(1.02); /* "Lights up" the product */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); /* Adds depth */
+    }
+
+    .card h3 { font-size: 28px; font-weight: 600; margin-bottom: 10px; }
+    .card p { color: #86868b; font-size: 17px; line-height: 1.5; margin-bottom: 25px; flex-grow: 1; }
+
+    .price-tag {
+      font-size: 22px;
+      font-weight: 500;
+      margin-bottom: 25px;
+      letter-spacing: -0.5px;
+    }
+
+    .buy-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      align-self: flex-start;
+      transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .buy-btn:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+      box-shadow: 0 10px 20px rgba(0, 113, 227, 0.2);
+    }
+
+    footer {
+      padding: 120px 80px;
+      text-align: center;
+      background: var(--bg);
+    }
+
+    footer h2 { font-size: 52px; letter-spacing: -2px; margin-bottom: 40px; }
+
+    @media (max-width: 1000px) {
+      header { padding: 20px 40px; }
+      .grid { grid-template-columns: 1fr; }
+      .content-section { padding: 40px; }
+      .main-product { width: 70%; }
+    }
+  </style>
+</head>
+<body>
+
+<header id="navbar">
+  <h1>HOOD RESEARCH</h1>
+  <div class="toggle-container">
+  </div>
+</header>
+
+<div class="scroll-container">
+  <div class="sticky-wrapper">
+    <div class="hero-image-box">
+      <img src="Vape.png" alt="Prototype" class="main-product" id="mainProduct">
+    </div>
+    <div class="hero-text-overlay" id="heroText">
+      <h2>SINGLE CAN</h2>
+      <p style="font-size: 21px; margin-top: 25px; color: #86868b; font-weight: 500;">Experimental Craftsmanship.</p>
+    </div>
+  </div>
+</div>
+
+<section id="products" class="content-section">
+  <div class="grid">
+
+    <div class="card">
+      <img src="Vape.png" alt="Single Can">
+      <h3>Single Can</h3>
+      <p>A seamless fusion of industrial tech and minimalist art.</p>
+      <div class="price-tag">19.99 €</div>
+      <a href="https://instagram.com/YOUR_USERNAME" target="_blank" class="buy-btn">
+        BUY ON INSTAGRAM
+      </a>
+    </div>
+
+    <div class="card">
+      <img src="Vape.png" alt="Triple Can">
+      <h3>Triple Can</h3>
+      <p>Enhanced experimental geometry. A triple-milled structure for maximum aesthetic weight.</p>
+      <div class="price-tag">29.99 €</div>
+      <a href="https://instagram.com/YOUR_USERNAME" target="_blank" class="buy-btn">
+        BUY ON INSTAGRAM
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <h2>Inquiries Only.</h2>
+  <p style="margin-top: 60px; font-size: 12px; color: #86868b; letter-spacing: 1px;">© 2026 HOOD RESEARCH DEPT.</p>
+</footer>
+
+<script>
+
+  const mainProduct = document.getElementById('mainProduct');
+  const heroText = document.getElementById('heroText');
+  const header = document.getElementById('navbar');
+
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const viewportHeight = window.innerHeight;
+    
+    if (scrolled > 50) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+
+    let scrollFraction = scrolled / viewportHeight;
+    
+    if (scrollFraction <= 1.2) {
+      let scale = 1 + (scrollFraction * 0.45);
+      let opacity = 1 - (scrollFraction * 1.4);
+      
+      mainProduct.style.transform = `scale(${scale})`;
+      heroText.style.opacity = opacity;
+      heroText.style.transform = `translateY(${scrolled * -0.25}px)`;
+    }
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('reveal');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card').forEach(card => {
+    observer.observe(card);
+  });
+</script>
+
+</body>
+</html>
