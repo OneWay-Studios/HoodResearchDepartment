@@ -29,18 +29,87 @@
 
     /* INITIAL FADE IN ANIMATION */
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow-x: hidden;
-      opacity: 0;
-      animation: pageIn 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-x: hidden;
+
+    /* IMPORTANT FIX */
+    overflow: hidden; /* locks scroll on load */
+    height: 100vh;
+
+    opacity: 0;
+    animation: pageIn 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
 
     @keyframes pageIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* LOCK BACKGROUND */
+    body.locked {
+    overflow: hidden;
+    }
+
+    .age-gate {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+
+    /* IMPORTANT: fully block interaction */
+    pointer-events: all;
+    }
+
+    .age-gate * {
+        pointer-events: all;
+    }
+
+    /* POPUP BOX */
+    .age-box {
+    background: var(--bg);
+    color: var(--text);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.5);
+    animation: popIn 0.35s ease-out;
+    }
+
+    @keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+    }
+
+    .age-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    }
+
+    .age-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    }
+
+    .age-buttons button:first-child {
+    background: var(--accent);
+    color: white;
+    }
+
+    .age-buttons button:last-child {
+    background: #e5e5e5;
     }
 
     /* --- Navigation --- */
@@ -260,6 +329,11 @@
       text-align: center;
       background: var(--bg);
     }
+    
+    body.unlocked {
+        overflow: auto;
+        height: auto;
+    }
 
     footer h2 { font-size: 52px; letter-spacing: -2px; margin-bottom: 40px; }
 
@@ -272,6 +346,8 @@
   </style>
 </head>
 <body>
+
+
 
 <header id="navbar">
   <h1>HOOD RESEARCH DEPARTMENT</h1>
@@ -324,6 +400,8 @@
 
 
 
+
+
 <footer>
   <h2>Inquiries Only.</h2>
     <p style="max-width:600px;margin:40px auto 0;font-size:13px;color:#86868b;">
@@ -339,15 +417,39 @@
 
 
 <script>
-
   const mainProduct = document.getElementById('mainProduct');
   const heroText = document.getElementById('heroText');
   const header = document.getElementById('navbar');
+  const ageGate = document.getElementById("ageGate");
 
+    window.enterSite = function () {
+    const ageGate = document.getElementById("ageGate");
+
+    ageGate.style.display = "none";
+
+    // THIS IS THE MISSING PART 👇
+    document.body.classList.remove("locked");
+    document.body.classList.add("unlocked");
+
+    localStorage.setItem("ageVerified", "true");
+    };
+
+    window.exitSite = function () {
+    window.location.href = "https://www.google.com";
+    };
+
+  // CHECK ON LOAD (ONLY ONCE)
+  window.addEventListener("load", () => {
+    if (localStorage.getItem("ageVerified") === "true") {
+      ageGate.style.display = "none";
+    }
+  });
+
+  // SCROLL EFFECTS
   window.addEventListener('scroll', () => {
     const scrolled = window.scrollY;
     const viewportHeight = window.innerHeight;
-    
+
     if (scrolled > 50) {
       header.classList.add('scrolled');
     } else {
@@ -355,17 +457,18 @@
     }
 
     let scrollFraction = scrolled / viewportHeight;
-    
+
     if (scrollFraction <= 1.2) {
       let scale = 1 + (scrollFraction * 0.45);
       let opacity = 1 - (scrollFraction * 1.4);
-      
+
       mainProduct.style.transform = `scale(${scale})`;
       heroText.style.opacity = opacity;
       heroText.style.transform = `translateY(${scrolled * -0.25}px)`;
     }
   });
 
+  // CARD ANIMATION
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -378,6 +481,21 @@
     observer.observe(card);
   });
 </script>
+
+<!-- AGE GATE OVERLAY -->
+<div id="ageGate" class="age-gate">
+  <div class="age-box">
+    <h2>Age Verification</h2>
+    <p>Are you 18 years or older?</p>
+
+    <div class="age-buttons">
+      <button onclick="enterSite()">Yes</button>
+      <button onclick="exitSite()">No</button>
+    </div>
+
+    <small>This site contains conceptual products and requires age confirmation.</small>
+  </div>
+</div>
 
 </body>
 </html>
