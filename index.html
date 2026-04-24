@@ -14,6 +14,18 @@
       --glass: rgba(255, 255, 255, 0.7);
     }
 
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+    }
+
     body.dark {
       --bg: #000000;
       --text: #f5f5f7;
@@ -121,7 +133,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 40px 80px;
+      padding: 20px 20px;
       backdrop-filter: blur(30px);
       -webkit-backdrop-filter: blur(30px);
       background: var(--glass);
@@ -351,7 +363,11 @@
 
 
 <header id="navbar">
-  <h1>HOOD RESEARCH DEPARTMENT</h1>
+  <div class="logo-area">
+    <img src="HRDLOGO.png" alt="Logo" class="logo">
+    <h1>HOOD RESEARCH DEPARTMENT</h1>
+  </div>
+
   <div class="toggle-container">
   </div>
 </header>
